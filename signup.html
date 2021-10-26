@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Andada+Pro:ital,wght@0,400;0,500;1,400&display=swap"
+      rel="stylesheet"
+    />
+    <title>Sign Up</title>
+  </head>
+  <body>
+    <div class="animate">
+      <p class="loading"></p>
+      <p class="messages"></p>
+      <p class="error"></p>
+    </div>
+    <nav class="nav">
+      <ul class="before">
+        <li>
+          <a href="index.html" class="home" id="before">Home</a>
+        </li>
+        <li id="set"><a href="signin.html" id="sign-in">Sign In</a></li>
+      </ul>
+    </nav>
+    <div class="container">
+      <div class="sign-up-page">
+        <h2>SIGN UP</h2>
+        <p>Fields marked <span> * </span> must be completely filled</p>
+        <form id="form">
+          <p>
+            <label class="user" for="username">Username <span>*</span></label>
+            <input
+              type="text"
+              name="username"
+              placeholder="you_me"
+              id="username"
+            />
+            <span class="username-spn">Input Username</span>
+          </p>
+          <p>
+            <label for="email">Your email address <span>*</span></label>
+            <input
+              type="email"
+              name="email"
+              id="email"
+              placeholder="Enter your email address"
+            />
+            <span class="email-spn">Input Email</span>
+          </p>
+          <p>
+            <label for="password1">Password <span>*</span></label>
+            <input
+              type="password"
+              name="password1"
+              placeholder="Enter a password"
+              id="password1"
+            />
+            <span class="pass-spn">Input Password</span>
+          </p>
+          <p>
+            <label for="password2">Confirm Password <span>*</span></label>
+            <input
+              type="password"
+              name="password2"
+              id="password2"
+              placeholder="Confirm password"
+            />
+            <span class="pass2-spn">Input Password</span>
+          </p>
+          <span class="warning">Passwords do not match</span>
+          <span class="warning2">Password must be six or more</span>
+          <p>
+            <input type="submit" class="submit" value="Sign Up" />
+          </p>
+        </form>
+      </div>
+    </div>
+    <script>
+      const form = document.getElementById("form");
+
+      // USER DETAILS GETTER
+      const username = document.getElementById("username");
+      let email = document.getElementById("email");
+      const password1 = document.getElementById("password1");
+      const password2 = document.getElementById("password2");
+
+      //LOADER ANIMATION
+      const getAnimation = document.querySelector(".animate");
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        signUpUser();
+      });
+      //LOADERS
+      const messages = document.querySelector(".messages");
+      const ifError = document.querySelector(".error");
+      const Loading = document.querySelector(".loading");
+
+      function removeLoader() {
+        getAnimation.classList.remove("active");
+      }
+
+      function isLoading() {
+        getAnimation.classList.add("active");
+        Loading.classList.add("active");
+        messages.innerText = "";
+        messages.classList.add("active");
+      }
+
+      // FOR USER SIGN UP
+      async function signUpUser() {
+        const usrnmeSpan = document.querySelector(".username-spn");
+        const emailSpan = document.querySelector(".email-spn");
+        const pass1Span = document.querySelector(".pass-spn");
+        const pass2Span = document.querySelector(".pass2-spn");
+        const warning = document.querySelector(".warning");
+        const warning2 = document.querySelector(".warning2");
+
+        let usernameValue = username.value.trim();
+        let emailValue = email.value.trim();
+        let passwordValue = password1.value.trim();
+        let password2Value = password2.value.trim();
+
+        let isEmpty = "";
+        function removeSpans() {
+          usrnmeSpan.classList.remove("active");
+          pass1Span.classList.remove("active");
+          pass2Span.classList.remove("active");
+          emailSpan.classList.remove("active");
+        }
+        switch (isEmpty) {
+          case usernameValue:
+            usrnmeSpan.classList.add("active");
+            break;
+          case emailValue:
+            emailSpan.classList.add("active");
+            break;
+          case passwordValue:
+            pass1Span.classList.add("active");
+            break;
+          case password2Value:
+            pass2Span.classList.add("active");
+            break;
+          default:
+            removeSpans();
+
+            break;
+        }
+
+        if (passwordValue !== password2Value) {
+          warning.classList.add("active");
+          warning2.classList.remove("active");
+        } else if (passwordValue.length < 6) {
+          warning2.classList.add("active");
+          warning.classList.remove("active");
+          console.log("great");
+        } else {
+          warning2.classList.remove("active");
+          warning.classList.remove("active");
+          console.log("all good");
+
+          try {
+            isLoading();
+            //  GETS INPUT FIELDS VALUES
+            const newUser = {
+              username: usernameValue,
+              email: emailValue,
+              password: passwordValue,
+            };
+            console.log(newUser);
+            //SENDING USER LOGINS USING FETCH
+            const options = {
+              method: "POST",
+              body: JSON.stringify(newUser),
+              headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json, text/plain, */*",
+              },
+            };
+            const URL = "https://www.iferch.com/iferchbeta/maxapi/register.php";
+            const response = await fetch(URL, options);
+            const data = await response.json();
+            const useTheData = await data;
+            console.log(useTheData);
+            const { status, message } = await useTheData;
+            if (status === 201) {
+              Loading.classList.remove("active");
+              messages.classList.remove("active");
+              const text = `Account ${message}. Sign In to continue`;
+              messages.innerText = text;
+              console.log(message);
+              setTimeout(() => {
+                window.location = "signin.html";
+              }, 1000);
+              username.value = "";
+              email.value = "";
+              password1.value = "";
+              password2.value = "";
+            } else {
+              ifError.classList.remove("active");
+              Loading.classList.remove("active");
+              messages.classList.remove("active");
+              const text = `${message}`;
+              messages.innerText = text;
+              setTimeout(removeLoader, 2000);
+              console.log(message);
+            }
+          } catch (error) {
+            Loading.classList.remove("active");
+            ifError.classList.add("active");
+            const text = `Ooops...Something went wrong.`;
+            ifError.innerHTML = text;
+            setTimeout(() => {
+              getAnimation.classList.remove("active");
+              ifError.classList.remove("active");
+              ifError.innerHTML = "";
+            }, 4000);
+          }
+        }
+
+        // doAll();
+        //SIMPLE CLIENT SIDE VALIDATION
+        // if (passwordValue !== password2Value) {
+        //   const text = `Password must match`;
+        //   messages.innerText = text;
+        // } else if (passwordValue.length < 6) {
+        //   const text = `Password must be six or more`;
+        //   messages.innerText = text;
+        // } else {
+        //   console.log("bn mee");
+        //   //GETS INPUT FIELDS VALUES
+        //   const newUser = {
+        //     username: usernameValue,
+        //     email: emailValue,
+        //     password: passwordValue,
+        //   };
+        //   console.log(newUser);
+        //   //SENDING USER LOGINS USING FETCH
+        //   const options = {
+        //     method: "POST",
+        //     body: JSON.stringify(newUser),
+        //     headers: {
+        //       "Content-Type": "application/json",
+        //       Accept: "application/json, text/plain, */*",
+        //     },
+        //   };
+        //   const URL = "https://www.ifedrch.com/iferchbeta/maxapi/register.php";
+        //   const response = await fetch(URL, options);
+        //   const data = await response.json();
+
+        //   nest.classList.remove("active");
+        //   document.getElementById("get-username").innerText = usernameValue;
+        //   username.value = "";
+        //   email.value = "";
+        //   password1.value = "";
+        //   password2.value = "";
+        //   contents.classList.add("active");
+        // }
+      }
+    </script>
+  </body>
+</html>

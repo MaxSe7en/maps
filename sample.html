@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Andada+Pro:ital,wght@0,400;0,500;1,400&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+      integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+      crossorigin=""
+    />
+    <script
+      src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+      integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+      crossorigin=""
+    ></script>
+    <title>Test</title>
+  </head>
+  <body>
+    <div class="Wrapper">
+      <nav class="nav">
+        <ul class="before">
+          <li>
+            <a href="index.html" id="before">Home</a>
+          </li>
+          <li id="set"><h3 href="signin.html" id="sign-in2">dgfgsfdg</h3></></li>
+        </ul>
+      </nav>
+      <div id="add-map"></div>
+    </div>
+  </body>
+  <script>
+    const mymap = document.getElementById("add-map");
+      // This creates the map
+        const map = L.map("add-map").setView([53.9333, -116.5765], 5);
+
+        //add the tiles that make up the map
+        const attribution = `&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMAp</a> contributors`;
+        const tileUrl = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
+        const tiles = L.tileLayer(tileUrl, { attribution });
+        tiles.addTo(map);
+        //creates the marker
+        const marker = L.marker([53.9333, -116.5765]);
+        marker.addTo(map);
+        //creates a new marker on click
+        map.on("click", (e) => {
+        const newMap = new L.marker([e.latlng.lat, e.latlng.lng]);
+        newMap.addTo(map);
+        });
+  </script>
+  <script src="sample.js"></script>
+</html>

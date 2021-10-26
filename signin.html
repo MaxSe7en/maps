@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Andada+Pro:ital,wght@0,400;0,500;1,400&display=swap"
+      rel="stylesheet"
+    />
+    <title>Sign In</title>
+  </head>
+  <body>
+    <div class="animate">
+      <p class="loading"></p>
+      <p class="messages"></p>
+      <p class="error"></p>
+    </div>
+    <nav class="nav">
+      <ul class="before">
+        <li>
+          <a href="index.html" class="home" id="before">Home</a>
+        </li>
+        <li id="set" class="sign-up">
+          <a href="signup.html" id="sign-up">Sign Up</a>
+        </li>
+      </ul>
+    </nav>
+    <div class="container">
+      <div class="sign-in-page">
+        <h3>Sign In</h3>
+        <form id="form2">
+          <p>
+            <label for="email">Email address </label>
+            <input
+              type="email"
+              name="email"
+              id="email1"
+              placeholder="Enter your email address"
+            />
+          </p>
+          <p>
+            <label for="password1"
+              >Password <span class="pass">Forgot password?</span></label
+            >
+            <input
+              type="password"
+              name="password1"
+              placeholder="Enter a password"
+              id="password"
+            />
+          </p>
+          <p>
+            <input type="submit" class="submit2" value="Sign In" />
+          </p>
+        </form>
+        <footer>
+          <p class="foot">
+            Don't have an account?
+            <a href="signup.html" id="footer" class="footer">Sign Up</a>
+          </p>
+        </footer>
+      </div>
+    </div>
+
+    <script>
+      const signUp = document.getElementById("sign-up");
+      const signIn = document.getElementById("sign-in");
+      const signIn2 = document.getElementById("sign-in2");
+      const form2 = document.getElementById("form2");
+
+      // console.log(form2);
+      // USER DETAILS GETTER
+      const email1 = document.getElementById("email1");
+      const passLog = document.getElementById("password");
+
+      //LOADER ANIMATION
+      const getAnimation = document.querySelector(".animate");
+
+      const messages = document.querySelector(".messages");
+      const ifError = document.querySelector(".error");
+      const Loading = document.querySelector(".loading");
+      function removeLoader() {
+        getAnimation.classList.remove("active");
+      }
+
+      function isLoading() {
+        getAnimation.classList.add("active");
+        Loading.classList.add("active");
+        messages.innerText = "";
+        messages.classList.add("active");
+      }
+
+      form2.addEventListener("submit", (e) => {
+        e.preventDefault();
+        login();
+      });
+      //FOR USER SIGN IN
+      async function login() {
+        const emailValue = email1.value.trim();
+        const passwordValue = passLog.value.trim();
+        const logins = {
+          email: emailValue,
+          password: passwordValue,
+        };
+        console.log("works");
+        //LOOPING THROUGH  THE USERS TO FIND MATCH
+        try {
+          isLoading();
+          const URL = "https://www.iferch.com/iferchbeta/maxapi/signin.php";
+          const options = {
+            method: "POST",
+            body: JSON.stringify(logins),
+          };
+
+          const response = await fetch(URL, options);
+          console.log();
+
+          const usersData = await response.json();
+          const useTheData = await usersData;
+
+          const { status, message } = await useTheData;
+          if (status === 200) {
+            Loading.classList.remove("active");
+            messages.classList.remove("active");
+            const text = `${message}. Redirecting now...`;
+            messages.innerText = text;
+            console.log(message);
+            setTimeout(() => {
+              window.location = "sample.html";
+            }, 1000);
+
+            email1.value = "";
+            passLog.value = "";
+          } else {
+            ifError.classList.remove("active");
+            Loading.classList.remove("active");
+            messages.classList.remove("active");
+            const text = `${message}`;
+            messages.innerText = text;
+            setTimeout(removeLoader, 2000);
+            console.log(message);
+          }
+        } catch (error) {
+          Loading.classList.remove("active");
+          ifError.classList.add("active");
+          const text = `Ooops...Something went wrong.`;
+          ifError.innerHTML = text;
+          setTimeout(() => {
+            getAnimation.classList.remove("active");
+            ifError.classList.remove("active");
+            ifError.innerHTML = "";
+          }, 4000);
+        }
+      }
+    </script>
+  </body>
+</html>
